@@ -65,12 +65,9 @@ function validateRequiredField(field, form) {
 // need to validate zip, birthdate, and occupation other
 
 function validateZip(field, form) {
-	//something is wrong with zipRegExp. 
 	var zipRegExp = new RegExp('^\\d{5}$');
-	console.log("this is before false");
-	console.log("we are trying to validate: " + field);
-	console.log("this zip code is: " + zipRegExp.test(field));
-	/*if (zipRegExp.test(field)) {
+	var zip = document.getElementsByName("zip")[0].value;
+	if (zipRegExp.test(zip)) {
 		form[field].className = 'form-control';
 		console.log("this is true!")
 		return true;
@@ -78,7 +75,7 @@ function validateZip(field, form) {
 		form[field].className = 'invalid-field form-control';
 		console.log("this is false!");
 		return false;
-	}*/
+	}
 } // validateZip(field,form)
 
 function onSubmit(evt) {
