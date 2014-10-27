@@ -26,8 +26,7 @@ function showHideOcc() {
 		occ.style.display = "inline";
 	} else {
 		occ.style.display = "none";
-		//occ.form.reset();
-		//need to figure out how to clear field without resetting the form the entire time
+		occ.value = '';
 	}
 } // showHideOcc()
 
@@ -39,10 +38,70 @@ function leave() {
 	}
 } // leave()
 
-document.addEventListener('DOMContentLoaded', function() { 
+function validateForm(form) {
+	var requiredFields = ['firstName', 'lastName', 'address1', 'city', 'state', 'zip', 'birthdate'];
+	var idx;
+	var valid = true;
+	
+	for (idx = 0; idx < requiredFields.length - 2; idx++) {
+		valid &= validateRequiredField(requiredFields[idx], form);
+	}
+	valid &= validateZip(requiredFields[5], form);
+	
+	return valid;
+} // validateForm(form)
 
+function validateRequiredField(field, form) {
+	if (0 == form[field].value.trim().length) {
+		form[field].className = 'invalid-field form-control';
+		return false;
+	} else {
+		form[field].className = 'form-control';
+		return true;
+	} //how can i get this to properly box birthdate and zip code?
+} // validateRequiredField(field, form)
+
+
+// need to validate zip, birthdate, and occupation other
+
+function validateZip(field, form) {
+	//something is wrong with zipRegExp. 
+	var zipRegExp = new RegExp('^\\d{5}$');
+	console.log("this is before false");
+	console.log("we are trying to validate: " + field);
+	console.log("this zip code is: " + zipRegExp.test(field));
+	/*if (zipRegExp.test(field)) {
+		form[field].className = 'form-control';
+		console.log("this is true!")
+		return true;
+	} else {
+		form[field].className = 'invalid-field form-control';
+		console.log("this is false!");
+		return false;
+	}*/
+} // validateZip(field,form)
+
+function onSubmit(evt) {
+	try {
+		var valid = validateForm(this);
+		
+		if (!valid && evt.preventDefault) {
+			evt.preventDefault();
+		}
+		
+		evt.returnValue = valid;
+		return valid;
+	}
+	catch(err) {
+		alert("Exception: " + err);
+	}
+} // onSubmit()
+
+document.addEventListener('DOMContentLoaded', function() { 
 	loadStates();
 	occupation.addEventListener('change', showHideOcc);
 	cancelButton.addEventListener('click', leave);
 	//What allows us to access occupation without calling document.get.....?
+	var ourForm = document.getElementById("signup");
+	ourForm.addEventListener('submit', onSubmit);
 });
