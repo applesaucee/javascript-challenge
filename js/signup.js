@@ -6,7 +6,7 @@
 "use strict";
 
 function loadStates() {
-	var elem = document.getElementById("state");
+	var elem = document.getElementsByName("state")[0];
 	
 	for (var i = 0; i < usStates.length; i++) {
 		var opt = document.createElement("option");
@@ -39,6 +39,7 @@ function leave() {
 } // leave()
 
 function validateForm(form) {
+	// why is it that despite not having an id or anything, js still knows what fields to work with?
 	var requiredFields = ['firstName', 'lastName', 'address1', 'city', 'state', 'zip', 'birthdate'];
 	var idx;
 	var valid = true;
@@ -47,6 +48,7 @@ function validateForm(form) {
 		valid &= validateRequiredField(requiredFields[idx], form);
 	}
 	valid &= validateZip(requiredFields[5], form);
+	valid &= validateBirth(requiredFields[6], form);
 	
 	return valid;
 } // validateForm(form)
@@ -58,25 +60,35 @@ function validateRequiredField(field, form) {
 	} else {
 		form[field].className = 'form-control';
 		return true;
-	} //how can i get this to properly box birthdate and zip code?
+	}
 } // validateRequiredField(field, form)
-
-
-// need to validate zip, birthdate, and occupation other
 
 function validateZip(field, form) {
 	var zipRegExp = new RegExp('^\\d{5}$');
 	var zip = document.getElementsByName("zip")[0].value;
 	if (zipRegExp.test(zip)) {
 		form[field].className = 'form-control';
-		console.log("this is true!")
 		return true;
 	} else {
 		form[field].className = 'invalid-field form-control';
-		console.log("this is false!");
 		return false;
 	}
 } // validateZip(field,form)
+
+function validateBirth(field, form) {
+	console.log("field is: " + field);
+	console.log("dob is: " + document.getElementById(field).value);
+	var today = new Date();
+	var age;
+	/*if (age >= 13) {
+		form[field].className = 'form-control';
+		return true;
+	} else {
+		form[field].className = 'invalid-field form-control';
+		something about a message goes here
+		return false;
+	}*/
+} // validateBirth(field, form)
 
 function onSubmit(evt) {
 	try {
