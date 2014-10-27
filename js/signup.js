@@ -13,8 +13,6 @@ function loadStates() {
 		opt.value = usStates[i].code;
 		var text = document.createTextNode(usStates[i].name);
 		opt.appendChild(text);
-		// Why do we have to append text to option in order to show the text for the option?
-		// As in, what does it actually do?
 		elem.appendChild(opt);
 	} 
 } // loadStates()
@@ -39,7 +37,6 @@ function leave() {
 } // leave()
 
 function validateForm(form) {
-	// why is it that despite not having an id or anything, js still knows what fields to work with?
 	var requiredFields = ['firstName', 'lastName', 'address1', 'city', 'state', 'zip', 'birthdate'];
 	var idx;
 	var valid = true;
@@ -50,6 +47,10 @@ function validateForm(form) {
 	valid &= validateZip(requiredFields[5], form);
 	valid &= validateBirth(requiredFields[6], form);
 	
+    if (occupation.value == "other") {
+        valid &= validateRequiredField("occupationOther", form);
+    }
+    
 	return valid;
 } // validateForm(form)
 
@@ -76,18 +77,24 @@ function validateZip(field, form) {
 } // validateZip(field,form)
 
 function validateBirth(field, form) {
-	console.log("field is: " + field);
-	console.log("dob is: " + document.getElementById(field).value);
-	var today = new Date();
-	var age;
-	/*if (age >= 13) {
+    var today = new Date();
+    var dob = new Date(document.getElementById(field).value);
+	var year = today.getFullYear() - dob.getUTCFullYear();
+    var month = today.getMonth() - dob.getUTCMonth();
+    var day = today.getDate() - dob.getUTCDate();
+    
+    if (month < 0 || (month == 0 && day < 0)) {
+        year = year - 1;
+    }
+    
+    if (year >= 13) {
 		form[field].className = 'form-control';
 		return true;
 	} else {
 		form[field].className = 'invalid-field form-control';
-		something about a message goes here
+        document.getElementById("birthdateMessage").innerHTML = "You must be 13 years or older to sign up!";
 		return false;
-	}*/
+	}
 } // validateBirth(field, form)
 
 function onSubmit(evt) {
@@ -110,7 +117,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	loadStates();
 	occupation.addEventListener('change', showHideOcc);
 	cancelButton.addEventListener('click', leave);
-	//What allows us to access occupation without calling document.get.....?
 	var ourForm = document.getElementById("signup");
 	ourForm.addEventListener('submit', onSubmit);
 });
